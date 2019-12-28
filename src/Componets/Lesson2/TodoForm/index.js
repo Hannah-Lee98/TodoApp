@@ -3,25 +3,19 @@ import Root from './style'
 import Button from '../UIComponent/Button.js'
 import Input from '../UIComponent/Input.js'
 import container from './container'
+import { UpdateTodo } from '../../../Actions/todo'
 
 class TodoForm extends React.Component {
-    state = {
-        modelState: null,
-    }
     componentDidMount() {
         const { model } = this.props;
         if (model !== null) {
-            this.setState({
-                modelState: model ? { ...model } : null,
-            })
+            model && UpdateTodo(model.content)
         }
     }
     componentDidUpdate(preProps) {
         const { model } = this.props;
         if (preProps.model !== model) {
-            this.setState({
-                modelState: model ? { ...model } : null,
-            })
+            model && UpdateTodo(model.content)
         }
     }
     handleInput = (event) => {
@@ -30,10 +24,10 @@ class TodoForm extends React.Component {
     }
     handleAdd = () => {
         const { AddTodo, modelInput } = this.props
-        modelInput.trim()? AddTodo({
+        modelInput.trim() ? AddTodo({
             id: Math.random(),
             content: modelInput.trim()
-        }):this.props.EditTodo(null)
+        }) : this.props.EditTodo(null)
     }
     handleUpdate = async () => {
         const { UpdateTodo } = this.props;

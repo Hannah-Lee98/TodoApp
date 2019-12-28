@@ -22,29 +22,39 @@ function todoApp(state = initialState, action) {
                 todoList: [...state.todoList, action.data],
             }
         case UPDATE_TODO:
-            if (state.modelInput.trim() === "")
+            if (state.modelInput.trim() === "" || state.modelInput.trim() === null)
                 return {
                     todoList: state.todoList.filter(item => item.id !== state.model.id)
                 }
-            const todoList1 = state.todoList;
-            const todoListTemp = todoList1.slice()
-            const index = todoList1.findIndex(item => item.id === state.model.id)
-            todoListTemp[index] = { ...state.model, content: state.modelInput.trim() }
+        
             return (
                 {
                     ...state,
                     model: null,
-                    todoList: todoListTemp,
+                    todoList: state.todoList.map(item => {
+                        if (item.id !== state.model.id) {
+                            return item 
+                        }
+                        return {
+                            ...item,
+                            content: state.modelInput.trim()
+                        }
+                    }),
                     modelInput: null,
                 }
             )
         case EDIT_TODO:
+            if (action.data === null)
+                return {
+                    ...state,
+                    modelInput: null,
+                    model: null,
+                }
             return {
                 ...state,
-                model: action.data ? action.data : null,
+                model: action.data,
                 modelInput: action.data.content
             }
-
         case DELETE_TODO:
             return {
                 todoList: state.todoList.filter(item => item.id !== action.data.id)
